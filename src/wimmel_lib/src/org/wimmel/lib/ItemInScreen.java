@@ -5,7 +5,9 @@ package org.wimmel.lib;
 
 import java.awt.Point;
 import java.awt.geom.Path2D;
+import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 /**
  * This represents an {@link Item} in a {@link Screen}. The coordinates are relatively to the width of
@@ -20,32 +22,36 @@ public interface ItemInScreen {
      * 
      * @param screenWidth The width of the screen.
      * @return The image to use.
+     * @throws IOException If the image could not be loaded.
      */
-    public BufferedImage getImage(int screenWidth);
+    public BufferedImage getImage(int screenWidth) throws IOException;
     
     /**
-     * Returns the position of the top left corner of the image returned by {@link #getImage(int)}.
+     * Returns the position of the top left corner of the image returned by {@link #getImage()}.
      * 
      * @param screenWidth The width of the screen.
      * @return The position of the image in the screen.
+     * @throws IOException If the image could not be loaded.
      */
-    public Point getScreenPos(int screenWidth);
+    public Point getScreenPos(int screenWidth) throws IOException;
 
     /**
      * Returns the bounding box of the image.
      * 
      * @param screenWidth The width of the screen.
-     * @return The bounding box.
+     * @return The bounding box as an array of 4 points.
+     * @throws IOException If the image could not be loaded.
      */
-    public Path2D getBoundingBox(int screenWidth);
+    public Point2D[] getBoundingBox(int screenWidth) throws IOException;
     
     /**
      * Returns the bounding shape of the image. This should be used for hit testing.
      * 
      * @param screenWidth The width of the screen.
      * @return The bounding shape.
+     * @throws IOException If the image could not be loaded.
      */
-    public Path2D getBounds(int screenWidth);
+    public Path2D getBounds(int screenWidth) throws IOException;
     
     /**
      * Returns the represented item.
@@ -55,72 +61,9 @@ public interface ItemInScreen {
     public Item getItem();
     
     /**
-     * Returns the x-coordinate of the center of the item.
+     * Returns the item effect to be applied to the item.
      * 
-     * @return the x-coordinate.
+     * @return The item effect.
      */
-    public double getX();
-    
-    /**
-     * Returns the y-coordinate of the center of the item.
-     * 
-     * @return the y-coordinate.
-     */
-    public double getY();
-    
-    /**
-     * Returns the scale factor in x-direction.
-     * 
-     * @return the scale factor in x-direction.
-     */
-    public double getScaleX();
-    
-    /**
-     * Returns the scale factor in y-direction.
-     * 
-     * @return the scale factor in y-direction.
-     */
-    public double getScaleY();
-
-    /**
-     * Returns the rotation in degrees.
-     * 
-     * @return the rotation in degrees.
-     */
-    public double getRotation();
-    
-    /**
-     * Returns the alpha value between 0.0 and 1.0.
-     * 
-     * @return the alpha value.
-     */
-    public double getAlpha();
-    
-    /**
-     * Returns the saturation value between 0.0 and 1.0.
-     * 
-     * @return the saturation value between 0.0 and 1.0.
-     */
-    public double getSaturation();
-    
-    /**
-     * Returns the hue factor as a value between 0.0 and 1.0.
-     * 
-     * @return the hue factor.
-     */
-    public double getHueFactor();
-    
-    /**
-     * Returns the RGB values of the tint to use.
-     * 
-     * @return the tint.
-     */
-    public int[] getTint();
-    
-    /**
-     * Returns the factor of tinting to use (0.0 means no tinting, 1.0 means full tinting).
-     * 
-     * @return the factor of tinting to use
-     */
-    public double getTintFactor();
+    public ItemEffect getItemEffect();
 }

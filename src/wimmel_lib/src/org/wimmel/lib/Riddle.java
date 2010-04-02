@@ -3,7 +3,6 @@
  */
 package org.wimmel.lib;
 
-import java.util.Locale;
 import java.util.Set;
 
 /**
@@ -34,11 +33,10 @@ public interface Riddle {
     /**
      * Returns the text of the riddle.
      * 
-     * @param locale The locale.
      * @param itemsLeft The items still on the screen.
      * @return The text.
      */
-    public String getText(Locale locale, Set<ItemInScreen> itemsLeft);
+    public String getText(Set<ItemInScreen> itemsLeft);
     
     /**
      * Returns <code>true</code> if this is an invisible riddle which isn't explicitly shown (but
