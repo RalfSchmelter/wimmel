@@ -1,0 +1,19 @@
+The idea to cerate an open source hidden object game engine in Java.
+
+Current ideas:
+- Make it modular, so people can create games at different levels:
+  - A game consists of one or more quests.
+  - A quest consists of a screen, a set of riddles and a quest type.
+  - A quest type can be something like the normal find type, or spotting
+    the difference and so on.
+  - A riddle is on object to find, a pair of objects to combine ...
+  - A screen is a background and a number of placed objects.
+- The backgrounds, objects and screens can be put into libraries, so another
+  used can just reuse them.
+- Each library has an id and all the objects in that library have a name too.
+- Objects from a library are only referenced by the library id plus the object
+  id.
+- The engine should allow to export a game as a single jar file.
+- An applet export might be nice too.
+- Maybe we can support Android too?
+
