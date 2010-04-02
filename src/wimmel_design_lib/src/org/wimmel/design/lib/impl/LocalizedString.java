@@ -1,7 +1,7 @@
 /**
  * (C) 2010 by Ralf Schmelter
  */
-package org.wimmel.design.lib;
+package org.wimmel.design.lib.impl;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -15,6 +15,8 @@ import javax.xml.stream.XMLStreamWriter;
 import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
+
+import org.wimmel.design.lib.XMLExportable;
 
 /**
  * A localized string.
@@ -32,21 +34,6 @@ public class LocalizedString implements XMLExportable {
      * The tag per localization.
      */
     private static final String TAG2 = "localized-string-part";
-
-    /**
-     * The language attribute.
-     */
-    private static final QName ATTR_LANG = new QName("lang");
-
-    /**
-     * The country attribute.
-     */
-    private static final QName ATTR_COUNTRY = new QName("country");
-
-    /**
-     * The variant attribute.
-     */
-    private static final QName ATTR_VARIANT = new QName("variant");
 
     /**
      * The string attribute.
@@ -100,39 +87,7 @@ public class LocalizedString implements XMLExportable {
      * @return The localized version
      */
     public String getString(Locale locale) {
-        if (strings.containsKey(locale)) {
-            return strings.get(locale);
-        }
-        
-        if (locale.getVariant() != null) {
-            Locale noVariantLocale = new Locale(locale.getLanguage(), locale.getCountry());
-            
-            if (strings.containsKey(noVariantLocale)) {
-                return strings.get(noVariantLocale);
-            }
-        }
-        
-        if (locale.getCountry() != null) {
-            Locale noCountryLocale = new Locale(locale.getLanguage());
-            
-            if (strings.containsKey(noCountryLocale)) {
-                return strings.get(noCountryLocale);
-            }
-        }
-        
-        // Try english first.
-        Locale englishLocale = new Locale("en");
-        
-        if (strings.containsKey(englishLocale)) {
-            return strings.get(englishLocale);
-        }
-        
-        // Now try any random locale.
-        if (!strings.isEmpty()) {
-            return strings.values().iterator().next();
-        }
-        
-        return "No string found!";
+        return LocaleUtils.getFromLocaleMap(locale, strings);
     }
     
     /**
@@ -144,19 +99,12 @@ public class LocalizedString implements XMLExportable {
      * @throws XMLStreamException If the XML is invalid.
      */
     public static LocalizedString readFromXML(XMLEventReader reader) throws IOException, XMLStreamException {
-        XMLEvent event = reader.peek();
+        XMLEvent event = reader.nextTag();
         
-        if (!event.isStartElement()) {
-            return new LocalizedString();
+        if (!event.isStartElement() || !TAG1.equals(event.asStartElement().getName())) {
+            throw new XMLStreamException("Expected <" + TAG1 + ">", event.getLocation());
         }
         
-        StartElement element = event.asStartElement();
-        
-        if (!TAG1.equals(element.getName())) {
-            return new LocalizedString();
-        }
-        
-        reader.next();
         HashMap<Locale, String> strings = new HashMap<Locale, String>();
         
         while (true) {
@@ -166,7 +114,7 @@ public class LocalizedString implements XMLExportable {
                 return new LocalizedString(strings);
             }
             
-            element = event.asStartElement();
+            StartElement element = event.asStartElement();
             
             if (!TAG2.equals(element.getName())) {
                 throw new XMLStreamException("Expected <" + TAG2 + ">", event.getLocation());
